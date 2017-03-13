@@ -83,7 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 	
 	@Override
-	public boolean equalsession(AuthenticationSession session1, AuthenticationSession session2) {
+	public boolean equalSession(AuthenticationSession session1, AuthenticationSession session2) {
 		
 		try{
 			String sessionStr1 = objectConvertComponent.objectToJson(session1);

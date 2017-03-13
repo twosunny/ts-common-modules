@@ -11,7 +11,7 @@ public interface AuthenticationService {
 	
 	public void addSession(HttpServletResponse response, AuthenticationSession session);
 	
-	public boolean equalsession(AuthenticationSession session1, AuthenticationSession session2);
+	public boolean equalSession(AuthenticationSession session1, AuthenticationSession session2);
 	
 	public void removeSession(AuthenticationSession session, HttpServletRequest request,
 			HttpServletResponse response);
