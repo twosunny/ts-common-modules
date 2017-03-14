@@ -10,8 +10,8 @@ import org.springframework.util.StringUtils;
 
 import woosun.common.authentication.configuration.AuthenticationProperties;
 import woosun.common.authentication.domain.AuthenticationSession;
-import woosun.common.convert.component.ObjectConvertComponent;
-import woosun.common.encrypt.component.EncryptComponent;
+import woosun.common.convert.service.ObjectConvertService;
+import woosun.common.encrypt.service.EncryptService;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -20,10 +20,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private AuthenticationProperties authenticationProperties;
 	
 	@Autowired
-	private EncryptComponent encryptComponent;
+	private EncryptService encryptService;
 	
 	@Autowired
-	private ObjectConvertComponent objectConvertComponent;
+	private ObjectConvertService objectConvertService;
 	
 	@Override
 	public <T> AuthenticationSession getSession(HttpServletRequest request, String name, Class<T> originSessionType) {
@@ -60,16 +60,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	public void addSession(HttpServletResponse response, AuthenticationSession session) {
 		
 		String hash = authenticationProperties.getHash();
-		String jsonStr = objectConvertComponent.objectToJson(session);
+		String jsonStr = objectConvertService.objectToJson(session);
 		String hashCode = null;
 		
 		if(hash.equals("md5")){
-			hashCode = encryptComponent.getMd5Hash(jsonStr);
+			hashCode = encryptService.getMd5Hash(jsonStr);
 		}else{
-			hashCode = encryptComponent.getSha256Hash(jsonStr);
+			hashCode = encryptService.getSha256Hash(jsonStr);
 		}
 		
-		String encSession = encryptComponent.textEncrypt(hashCode + jsonStr);
+		String encSession = encryptService.textEncrypt(hashCode + jsonStr);
 		Cookie cookie = new Cookie(session.getSessionName(), encSession);
 		cookie.setPath(session.getSessionPath());
 		cookie.setDomain(session.getSessionDomain());
@@ -86,8 +86,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	public boolean equalSession(AuthenticationSession session1, AuthenticationSession session2) {
 		
 		try{
-			String sessionStr1 = objectConvertComponent.objectToJson(session1);
-			String sessionStr2 = objectConvertComponent.objectToJson(session2);
+			String sessionStr1 = objectConvertService.objectToJson(session1);
+			String sessionStr2 = objectConvertService.objectToJson(session2);
 			
 			if(sessionStr1.equals(sessionStr2)){
 				return true;
@@ -117,7 +117,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		
 		T session = null;
 		String hash = authenticationProperties.getHash();
-		String decSession = encryptComponent.textDecrypt(cookieValue);
+		String decSession = encryptService.textDecrypt(cookieValue);
 		
 		String hashCode = null;
 		String jsonStr = null;
@@ -126,15 +126,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		if(hash.equals("md5")){
 			hashCode = decSession.substring(0, 32);
 			jsonStr = decSession.substring(32);
-			originHashCode = encryptComponent.getMd5Hash(jsonStr);
+			originHashCode = encryptService.getMd5Hash(jsonStr);
 		}else{
 			hashCode = decSession.substring(0, 64);
 			jsonStr = decSession.substring(64);
-			originHashCode = encryptComponent.getSha256Hash(jsonStr);
+			originHashCode = encryptService.getSha256Hash(jsonStr);
 		}
 		
 		if(hashCode.equals(originHashCode)){
-			session = objectConvertComponent.jsonToObject(jsonStr, returnType);
+			session = objectConvertService.jsonToObject(jsonStr, returnType);
 		}
 		
 		return session;

@@ -1,4 +1,4 @@
-package woosun.common.encrypt.component;
+package woosun.common.encrypt.service;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -11,17 +11,16 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import woosun.common.convert.component.ObjectConvertComponent;
+import woosun.common.convert.service.ObjectConvertService;
 import woosun.common.encrypt.configuration.EncryptProperties;
 
-
-@Component
-public class EncryptComponent {
+@Service
+public class EncryptServiceImpl implements EncryptService {
 	
 	@Autowired
-	private ObjectConvertComponent objectConvertComponent;
+	private ObjectConvertService objectConvertService;
 	
 	@Autowired
 	private EncryptProperties encryptProperties;
@@ -33,7 +32,7 @@ public class EncryptComponent {
 	private Cipher decryptor;
 	
 	@PostConstruct
-	public void init() {
+	private void init() {
 		KEY = new SecretKeySpec(encryptProperties.getKey().getBytes(), "AES");
 		try {
 			encryptor = Cipher.getInstance(ALGORITHM);
@@ -46,7 +45,8 @@ public class EncryptComponent {
 		}
 
 	}
-	
+
+	@Override
 	public String textEncrypt(String inputStr) {
 		byte[] encodeBytes = null;
 		try {
@@ -59,6 +59,7 @@ public class EncryptComponent {
 		return getHex(encodeBytes);
 	}
 
+	@Override
 	public String textDecrypt(String inputStr) {
 		byte[] decodeBytes = null;
 		try {
@@ -69,33 +70,21 @@ public class EncryptComponent {
 			e.printStackTrace();
 			return null;
 		}
-
-	}
-	
-	private String getHex(byte[] raw) {
-		if (raw == null) {
-			return null;
-		}
-		StringBuilder hex = new StringBuilder(2 * raw.length);
-		for (byte b : raw) {
-			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(
-					HEXES.charAt((b & 0x0F)));
-		}
-
-		return hex.toString();
 	}
 
-	
-	public String getMd5Hash(Object obj){
-		String json = objectConvertComponent.objectToJson(obj);
+	@Override
+	public String getMd5Hash(Object obj) {
+		String json = objectConvertService.objectToJson(obj);
 		return getMd5Hash(json);
 	}
-	
-	public String getSha256Hash(Object obj){
-		String json = objectConvertComponent.objectToJson(obj);
+
+	@Override
+	public String getSha256Hash(Object obj) {
+		String json = objectConvertService.objectToJson(obj);
 		return getSha256Hash(json);
 	}
 
+	@Override
 	public String getMd5Hash(String inputStr) {
 		MessageDigest m = null;
 
@@ -121,7 +110,8 @@ public class EncryptComponent {
 
 		return null;
 	}
-	
+
+	@Override
 	public String getSha256Hash(String inputStr) {
 		MessageDigest m = null;
 
@@ -148,4 +138,17 @@ public class EncryptComponent {
 		return null;
 	}
 	
+	private String getHex(byte[] raw) {
+		if (raw == null) {
+			return null;
+		}
+		StringBuilder hex = new StringBuilder(2 * raw.length);
+		for (byte b : raw) {
+			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(
+					HEXES.charAt((b & 0x0F)));
+		}
+
+		return hex.toString();
+	}
+
 }

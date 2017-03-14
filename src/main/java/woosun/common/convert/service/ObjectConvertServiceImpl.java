@@ -1,15 +1,16 @@
-package woosun.common.convert.component;
+package woosun.common.convert.service;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
-@Component
-public class ObjectConvertComponent {
+@Service
+public class ObjectConvertServiceImpl implements ObjectConvertService {
+	
 	private ObjectMapper jsonMapper = null;
 
 	@PostConstruct
@@ -19,6 +20,7 @@ public class ObjectConvertComponent {
 		jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); 
 	}
 
+	@Override
 	public <T> T jsonToObject(String jsonData, Class<T> returnType) {
 		T data = null;
 
@@ -31,9 +33,9 @@ public class ObjectConvertComponent {
 
 		return data;
 	}
-	
-	public String objectToJson(Object obj)
-	{
+
+	@Override
+	public String objectToJson(Object obj) {
 		String jsonString = null;
 		try {
 			jsonString = jsonMapper.writeValueAsString(obj);
@@ -43,4 +45,5 @@ public class ObjectConvertComponent {
 		
 		return jsonString;
 	}
+
 }
