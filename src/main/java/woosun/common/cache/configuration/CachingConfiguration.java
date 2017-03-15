@@ -11,6 +11,7 @@ import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.cache.interceptor.CacheResolver;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.interceptor.SimpleKeyGenerator;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
@@ -26,10 +27,18 @@ import woosun.common.cache.domain.CacheSetProperties;
 public class CachingConfiguration implements CachingConfigurer {
 	
 	@Autowired
-	private CacheHelper cacheHelper;
+	private ConfigurableApplicationContext context;
 
 	@Bean
 	public net.sf.ehcache.CacheManager ehCacheManager() {
+		
+		CacheHelper cacheHelper = null;
+		
+		try{
+			cacheHelper = context.getBean(CacheHelper.class);
+		}catch(Exception e){
+			cacheHelper = null;
+		}
 		
 		if(cacheHelper == null){
 			return null;

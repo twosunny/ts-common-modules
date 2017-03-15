@@ -9,4 +9,5 @@ public class CommonComponentApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CommonComponentApplication.class, args);
 	}
+	
 }
