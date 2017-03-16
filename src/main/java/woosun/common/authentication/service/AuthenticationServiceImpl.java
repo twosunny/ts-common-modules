@@ -1,7 +1,6 @@
 package woosun.common.authentication.service;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -154,6 +153,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		
 		int maxAge = session.getSessionMaxAge();
 		Date createDt = session.getSessionCreateTime();
+		
+		if(maxAge == -1){
+			return false;
+		}
 		
 		LocalDateTime createTime = 
 				LocalDateTime.ofInstant(Instant.ofEpochMilli(createDt.getTime()), ZoneId.systemDefault());
