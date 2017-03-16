@@ -1,5 +1,11 @@
 package woosun.common.authentication.service;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,9 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		cookie.setPath(session.getSessionPath());
 		cookie.setDomain(session.getSessionDomain());
 		
-		if(session.getSessionMaxAge() > -1){
-			cookie.setMaxAge(session.getSessionMaxAge());
-		}
+		cookie.setMaxAge(session.getSessionMaxAge());
 		
 		response.addCookie(cookie);
 
@@ -135,12 +139,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			originHashCode = HashUtils.getSha256Hash(encSession);
 		}
 		
-		if(hashCode.equals(originHashCode)){
-			String decSession = encryptComponent.textDecrypt(encryptStoreName, encSession);
-			session = objectConvertService.jsonToObject(decSession, returnType);
-		}
+		if(!hashCode.equals(originHashCode)) return session;
+		
+		String decSession = encryptComponent.textDecrypt(encryptStoreName, encSession);
+		session = objectConvertService.jsonToObject(decSession, returnType);
 		
 		return session;
+	}
+	
+	@Override
+	public boolean isExpiredSession(AuthenticationSession session, Date now){
+		
+		if(session == null) return true;
+		
+		int maxAge = session.getSessionMaxAge();
+		Date createDt = session.getSessionCreateTime();
+		
+		LocalDateTime createTime = 
+				LocalDateTime.ofInstant(Instant.ofEpochMilli(createDt.getTime()), ZoneId.systemDefault());
+		LocalDateTime afterTime = createTime.plusSeconds(maxAge);
+		
+		LocalDateTime currentTime = 
+				LocalDateTime.ofInstant(Instant.ofEpochMilli(now.getTime()), ZoneId.systemDefault());
+		
+		return currentTime.isAfter(afterTime);
 	}
 	
 }

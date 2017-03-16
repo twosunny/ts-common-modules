@@ -1,5 +1,7 @@
 package woosun.common.authentication.service;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,4 +19,6 @@ public interface AuthenticationService {
 	
 	public void removeSession(AuthenticationSession session, HttpServletRequest request,
 			HttpServletResponse response);
+	
+	public boolean isExpiredSession(AuthenticationSession session, Date now);
 }

@@ -24,7 +24,6 @@ public class EncryptComponent {
 			encryptServiceStore.getEncryptService(storeName).textEncrypt(inputStr);
 			
 		}catch(Exception e){
-			e.printStackTrace();
 			return enc;
 		}
 		
@@ -40,7 +39,6 @@ public class EncryptComponent {
 			encryptServiceStore.getEncryptService(storeName).textDecrypt(inputStr);
 			
 		}catch(Exception e){
-			e.printStackTrace();
 			return dec;
 		}
 		

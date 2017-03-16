@@ -7,8 +7,8 @@ public abstract class AuthenticationSession {
 	private String sessionName;
 	private String sessionDomain;
 	private int sessionMaxAge = -1;
-	private Date sessionCreateTime;
-	private String sessionPath;
+	private Date sessionCreateTime = new Date();
+	private String sessionPath = "/";
 	
 	public String getSessionName() {
 		return sessionName;
