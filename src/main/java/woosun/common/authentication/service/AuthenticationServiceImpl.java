@@ -11,7 +11,8 @@ import org.springframework.util.StringUtils;
 import woosun.common.authentication.configuration.AuthenticationProperties;
 import woosun.common.authentication.domain.AuthenticationSession;
 import woosun.common.convert.service.ObjectConvertService;
-import woosun.common.encrypt.service.EncryptService;
+import woosun.common.encrypt.component.EncryptComponent;
+import woosun.common.encrypt.util.HashUtils;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -20,13 +21,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private AuthenticationProperties authenticationProperties;
 	
 	@Autowired
-	private EncryptService encryptService;
+	private EncryptComponent encryptComponent;
 	
 	@Autowired
 	private ObjectConvertService objectConvertService;
 	
 	@Override
-	public <T> AuthenticationSession getSession(HttpServletRequest request, String name, Class<T> originSessionType) {
+	public <T> AuthenticationSession getSession(HttpServletRequest request, String name, 
+			Class<T> originSessionType, String encryptStoreName) {
 		
 		AuthenticationSession authenticationSession = null;
 		
@@ -44,7 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			if(cookie != null){
 				for(Cookie c : cookie){
 					if(name.equals(c.getName())){
-						T session = getSession(c.getValue(), originSessionType);
+						T session = getSession(c.getValue(), originSessionType, encryptStoreName);
 						authenticationSession = (AuthenticationSession)session;
 					}
 				}
@@ -57,20 +59,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public void addSession(HttpServletResponse response, AuthenticationSession session) {
+	public void addSession(HttpServletResponse response, AuthenticationSession session, String encryptStoreName) {
 		
 		String hash = authenticationProperties.getHash();
 		String jsonStr = objectConvertService.objectToJson(session);
 		String hashCode = null;
 		
+		String encSession = encryptComponent.textEncrypt(encryptStoreName, jsonStr);
+		
 		if(hash.equals("md5")){
-			hashCode = encryptService.getMd5Hash(jsonStr);
+			hashCode = HashUtils.getMd5Hash(encSession);
 		}else{
-			hashCode = encryptService.getSha256Hash(jsonStr);
+			hashCode = HashUtils.getSha256Hash(encSession);
 		}
 		
-		String encSession = encryptService.textEncrypt(hashCode + jsonStr);
-		Cookie cookie = new Cookie(session.getSessionName(), encSession);
+		Cookie cookie = new Cookie(session.getSessionName(), hashCode + encSession);
 		cookie.setPath(session.getSessionPath());
 		cookie.setDomain(session.getSessionDomain());
 		
@@ -113,28 +116,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		response.addCookie(cookie);
 	}
 
-	private <T> T getSession(String cookieValue, Class<T> returnType){
+	private <T> T getSession(String cookieValue, Class<T> returnType, String encryptStoreName){
 		
 		T session = null;
 		String hash = authenticationProperties.getHash();
-		String decSession = encryptService.textDecrypt(cookieValue);
 		
 		String hashCode = null;
-		String jsonStr = null;
+		String encSession = null;
 		String originHashCode = null;
 		
 		if(hash.equals("md5")){
-			hashCode = decSession.substring(0, 32);
-			jsonStr = decSession.substring(32);
-			originHashCode = encryptService.getMd5Hash(jsonStr);
+			hashCode = cookieValue.substring(0, 32);
+			encSession = cookieValue.substring(32);
+			originHashCode = HashUtils.getMd5Hash(encSession);
 		}else{
-			hashCode = decSession.substring(0, 64);
-			jsonStr = decSession.substring(64);
-			originHashCode = encryptService.getSha256Hash(jsonStr);
+			hashCode = cookieValue.substring(0, 64);
+			encSession = cookieValue.substring(64);
+			originHashCode = HashUtils.getSha256Hash(encSession);
 		}
 		
 		if(hashCode.equals(originHashCode)){
-			session = objectConvertService.jsonToObject(jsonStr, returnType);
+			String decSession = encryptComponent.textDecrypt(encryptStoreName, encSession);
+			session = objectConvertService.jsonToObject(decSession, returnType);
 		}
 		
 		return session;

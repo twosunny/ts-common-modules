@@ -7,9 +7,11 @@ import woosun.common.authentication.domain.AuthenticationSession;
 
 public interface AuthenticationService {
 
-	public <T> AuthenticationSession getSession(HttpServletRequest request, String name, Class<T> originSessionType);
+	public <T> AuthenticationSession getSession(HttpServletRequest request, String name, 
+			Class<T> originSessionType, String encryptStoreName);
 	
-	public void addSession(HttpServletResponse response, AuthenticationSession session);
+	public void addSession(HttpServletResponse response, AuthenticationSession session,
+			String encryptStoreName);
 	
 	public boolean equalSession(AuthenticationSession session1, AuthenticationSession session2);
 	

@@ -10,31 +10,6 @@ public abstract class AuthenticationSession {
 	private Date sessionCreateTime;
 	private String sessionPath;
 	
-	public AuthenticationSession(String sessionName, 
-			String sessionDomain, 
-			String sessionPath, 
-			Date sessionCreateTime){
-		
-		this.sessionName = sessionName;
-		this.sessionDomain = sessionDomain;
-		this.sessionPath = sessionPath;
-		this.sessionCreateTime = sessionCreateTime;
-	}
-	
-	public AuthenticationSession(String sessionName, 
-			String sessionDomain, 
-			String sessionPath, 
-			Date sessionCreateTime,
-			int sessionMaxAge){
-		
-		this.sessionName = sessionName;
-		this.sessionDomain = sessionDomain;
-		this.sessionPath = sessionPath;
-		this.sessionCreateTime = sessionCreateTime;
-		this.sessionMaxAge = sessionMaxAge;
-		
-	}
-	
 	public String getSessionName() {
 		return sessionName;
 	}
