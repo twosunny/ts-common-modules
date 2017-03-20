@@ -17,7 +17,7 @@ import woosun.common.authentication.configuration.AuthenticationProperties;
 import woosun.common.authentication.domain.AuthenticationSession;
 import woosun.common.convert.service.ObjectConvertService;
 import woosun.common.encrypt.component.EncryptComponent;
-import woosun.common.encrypt.util.HashUtils;
+import woosun.common.encrypt.util.EncryptUtils;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -73,9 +73,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		String encSession = encryptComponent.textEncrypt(encryptStoreName, jsonStr);
 		
 		if(hash.equals("md5")){
-			hashCode = HashUtils.getMd5Hash(encSession);
+			hashCode = EncryptUtils.getMd5Hash(encSession);
 		}else{
-			hashCode = HashUtils.getSha256Hash(encSession);
+			hashCode = EncryptUtils.getSha256Hash(encSession);
 		}
 		
 		Cookie cookie = new Cookie(session.getSessionName(), hashCode + encSession);
@@ -131,11 +131,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		if(hash.equals("md5")){
 			hashCode = cookieValue.substring(0, 32);
 			encSession = cookieValue.substring(32);
-			originHashCode = HashUtils.getMd5Hash(encSession);
+			originHashCode = EncryptUtils.getMd5Hash(encSession);
 		}else{
 			hashCode = cookieValue.substring(0, 64);
 			encSession = cookieValue.substring(64);
-			originHashCode = HashUtils.getSha256Hash(encSession);
+			originHashCode = EncryptUtils.getSha256Hash(encSession);
 		}
 		
 		if(!hashCode.equals(originHashCode)) return session;

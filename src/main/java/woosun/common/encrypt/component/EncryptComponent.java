@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import woosun.common.convert.service.ObjectConvertService;
-import woosun.common.encrypt.util.HashUtils;
+import woosun.common.encrypt.util.EncryptUtils;
 
 @Component
 public class EncryptComponent {
@@ -48,12 +48,12 @@ public class EncryptComponent {
 	
 	public String getMd5Hash(Object obj) {
 		String json = objectConvertService.objectToJson(obj);
-		return HashUtils.getMd5Hash(json);
+		return EncryptUtils.getMd5Hash(json);
 	}
 
 	
 	public String getSha256Hash(Object obj) {
 		String json = objectConvertService.objectToJson(obj);
-		return HashUtils.getSha256Hash(json);
+		return EncryptUtils.getSha256Hash(json);
 	}
 }

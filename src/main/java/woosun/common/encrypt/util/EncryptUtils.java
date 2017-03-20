@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
-public class HashUtils {
+public class EncryptUtils {
 
 	public static String getMd5Hash(String inputStr) {
 		MessageDigest m = null;
