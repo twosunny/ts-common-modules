@@ -1,4 +1,4 @@
-package woosun.common.encrypt.util;
+package woosun.common.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import woosun.common.convert.service.ObjectConvertService;
-import woosun.common.encrypt.util.EncryptUtils;
+import woosun.common.utils.EncryptUtils;
 
 @Component
 public class EncryptComponent {

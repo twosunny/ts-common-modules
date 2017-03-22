@@ -1,4 +1,4 @@
-package woosun.common.authentication.util;
+package woosun.common.utils;
 
 import java.util.Arrays;
 import java.util.Collections;

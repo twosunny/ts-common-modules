@@ -17,7 +17,7 @@ import woosun.common.authentication.configuration.AuthenticationProperties;
 import woosun.common.authentication.domain.AuthenticationSession;
 import woosun.common.convert.service.ObjectConvertService;
 import woosun.common.encrypt.component.EncryptComponent;
-import woosun.common.encrypt.util.EncryptUtils;
+import woosun.common.utils.EncryptUtils;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
