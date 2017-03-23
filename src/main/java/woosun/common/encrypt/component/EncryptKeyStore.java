@@ -11,7 +11,8 @@ public class EncryptKeyStore {
 		encryptKeyPair.put(storeName, key);
 	}
 
-	public static Map<String, String> getEncryptKeyPair() {
+
+	protected static Map<String, String> getEncryptKeyPair() {
 		return encryptKeyPair;
 	}
 	
