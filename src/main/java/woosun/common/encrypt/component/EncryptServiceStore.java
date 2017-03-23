@@ -5,8 +5,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import woosun.common.encrypt.service.EncryptService;
@@ -15,9 +13,6 @@ import woosun.common.encrypt.service.EncryptServiceImpl;
 @Component
 public class EncryptServiceStore {
 	
-	@Autowired
-	private ConfigurableApplicationContext context;
-	
 	private Map<String, EncryptService> serviceStore = new HashMap<String, EncryptService>();
 
 	@PostConstruct
@@ -25,8 +20,7 @@ public class EncryptServiceStore {
 		
 		try{
 			
-			EncryptKeyStore encryptKeyStore = context.getBean(EncryptKeyStore.class);
-			Map<String,String> keyPair = encryptKeyStore.getEncryptKeyPair();
+			Map<String,String> keyPair = EncryptKeyStore.getEncryptKeyPair();
 			
 			if(keyPair.size() != 0){
 				for(String storeName : keyPair.keySet()){
