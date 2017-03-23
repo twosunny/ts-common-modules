@@ -7,18 +7,18 @@ import woosun.common.cache.domain.CacheSetProperties;
 
 public class CacheHelper {
 
-	private List<CacheSetProperties> cacheSetPropertiesList = new ArrayList<CacheSetProperties>();
+	private static List<CacheSetProperties> cacheSetPropertiesList = new ArrayList<CacheSetProperties>();
 	
-	public void addProperties(CacheSetProperties cacheSetProperties){
+	public static void addProperties(CacheSetProperties cacheSetProperties){
 		cacheSetPropertiesList.add(cacheSetProperties);
 	}
 
-	public List<CacheSetProperties> getCacheSetPropertiesList() {
+	public static List<CacheSetProperties> getCacheSetPropertiesList() {
 		return cacheSetPropertiesList;
 	}
 
-	public void setCacheSetPropertiesList(List<CacheSetProperties> cacheSetPropertiesList) {
-		this.cacheSetPropertiesList = cacheSetPropertiesList;
+	public static void setCacheSetPropertiesList(List<CacheSetProperties> cacheSetPropertiesList) {
+		CacheHelper.cacheSetPropertiesList = cacheSetPropertiesList;
 	}
 	
 }

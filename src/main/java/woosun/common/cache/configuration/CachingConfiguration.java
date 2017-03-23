@@ -2,7 +2,6 @@ package woosun.common.cache.configuration;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
@@ -11,7 +10,6 @@ import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.cache.interceptor.CacheResolver;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.interceptor.SimpleKeyGenerator;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
@@ -25,26 +23,11 @@ import woosun.common.cache.domain.CacheSetProperties;
 @Configuration
 @EnableCaching
 public class CachingConfiguration implements CachingConfigurer {
-	
-	@Autowired
-	private ConfigurableApplicationContext context;
 
 	@Bean
 	public net.sf.ehcache.CacheManager ehCacheManager() {
 		
-		CacheHelper cacheHelper = null;
-		
-		try{
-			cacheHelper = context.getBean(CacheHelper.class);
-		}catch(Exception e){
-			cacheHelper = null;
-		}
-		
-		if(cacheHelper == null){
-			return null;
-		}
-		
-		List<CacheSetProperties> cacheSetPropertiesList = cacheHelper.getCacheSetPropertiesList();
+		List<CacheSetProperties> cacheSetPropertiesList = CacheHelper.getCacheSetPropertiesList();
 		
 		if(CollectionUtils.isEmpty(cacheSetPropertiesList)){
 			return null;
