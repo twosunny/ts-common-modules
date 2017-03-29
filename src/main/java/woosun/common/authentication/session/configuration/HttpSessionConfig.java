@@ -1,5 +1,9 @@
 package woosun.common.authentication.session.configuration;
 
+import java.io.IOException;
+
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,12 +12,28 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.util.StringUtils;
 
+import redis.embedded.RedisServer;
+
 @EnableRedisHttpSession
 public class HttpSessionConfig {
 	
 	@Autowired
 	private SessionAuthenticationProperties authenticationProperties;
-
+	
+	@PostConstruct
+	private void init(){
+		if(authenticationProperties.isUseEmbeddedRedis()){
+			RedisServer redisServer;
+			try {
+				redisServer = new RedisServer(6379);
+				redisServer.start();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	@Bean
 	public LettuceConnectionFactory connectionFactory() {
 		

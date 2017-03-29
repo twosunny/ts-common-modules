@@ -15,7 +15,14 @@ public class SessionAuthenticationProperties {
 	private int redisPoolMaxIdle = 8;
 	private int redisPoolMinIdle = 1;
 	private int redisPoolMaxWaitMillis = 1000;
+	private boolean useEmbeddedRedis = true;
 	
+	public boolean isUseEmbeddedRedis() {
+		return useEmbeddedRedis;
+	}
+	public void setUseEmbeddedRedis(boolean useEmbeddedRedis) {
+		this.useEmbeddedRedis = useEmbeddedRedis;
+	}
 	public String getRedisHost() {
 		return redisHost;
 	}
