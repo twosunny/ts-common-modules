@@ -1,4 +1,4 @@
-package woosun.common.authentication.service;
+package woosun.common.authentication.cookie.service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -13,17 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import woosun.common.authentication.configuration.AuthenticationProperties;
-import woosun.common.authentication.domain.AuthenticationSession;
+import woosun.common.authentication.cookie.configuration.CookieAuthenticationProperties;
+import woosun.common.authentication.cookie.domain.AuthenticationSession;
 import woosun.common.convert.service.ObjectConvertService;
 import woosun.common.encrypt.component.EncryptComponent;
 import woosun.common.utils.EncryptUtils;
 
 @Service
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class CookieAuthenticationServiceImpl implements CookieAuthenticationService {
 
 	@Autowired
-	private AuthenticationProperties authenticationProperties;
+	private CookieAuthenticationProperties authenticationProperties;
 	
 	@Autowired
 	private EncryptComponent encryptComponent;
