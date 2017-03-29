@@ -4,6 +4,6 @@ import org.springframework.session.web.context.AbstractHttpSessionApplicationIni
 
 public class AppInitializer extends AbstractHttpSessionApplicationInitializer {
 	public AppInitializer() {
-		super(HttpSessionConfig.class);
+		//super(HttpSessionConfig.class);
 	}
 } 
