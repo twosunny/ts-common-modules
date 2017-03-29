@@ -1,13 +1,13 @@
-package woosun.common.authentication.service;
+package woosun.common.authentication.cookie.service;
 
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import woosun.common.authentication.domain.AuthenticationSession;
+import woosun.common.authentication.cookie.domain.AuthenticationSession;
 
-public interface AuthenticationService {
+public interface CookieAuthenticationService {
 
 	public <T> AuthenticationSession getSession(HttpServletRequest request, String name, 
 			Class<T> originSessionType, String encryptStoreName);

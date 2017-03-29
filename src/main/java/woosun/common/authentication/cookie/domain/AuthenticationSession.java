@@ -1,4 +1,4 @@
-package woosun.common.authentication.domain;
+package woosun.common.authentication.cookie.domain;
 
 import java.util.Date;
 

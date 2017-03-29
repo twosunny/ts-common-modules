@@ -1,11 +1,11 @@
-package woosun.common.authentication.configuration;
+package woosun.common.authentication.cookie.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties("common-auth")
-public class AuthenticationProperties {
+@ConfigurationProperties("common-auth.cookie")
+public class CookieAuthenticationProperties {
 
 	private String hash = "sha256";
 
