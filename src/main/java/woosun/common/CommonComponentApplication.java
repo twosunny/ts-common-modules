@@ -7,30 +7,22 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CommonComponentApplication {
 
 	public static void main(String[] args) {
+		/* set static init
+		initStatic();
+		*/
 		SpringApplication.run(CommonComponentApplication.class, args);
 	}
 	
-	/* Set EncryptKeyStore 
-	@Bean
-	public EncryptKeyStore getKeyStore(){
+	public static void initStatic(){
 		
-		EncryptKeyStore encryptKeyStore = new EncryptKeyStore();
-		encryptKeyStore.addKey("userKey", "1234567890123456");
-		encryptKeyStore.addKey("tokenKey","abcdefghijklmnop");
+		/* Set EncryptKeyStore 
+		EncryptKeyStore.addKey("userKey", "1234567890123456");
+		EncryptKeyStore.addKey("tokenKey", "abcdefghijklmnop");
 		
-		return encryptKeyStore;
+		/* Set Cache
+		CacheHelper.addProperties(new CacheSetProperties("cacheName1",10,10,10));
+		CacheHelper.addProperties(new CacheSetProperties("cacheName2",10,10,10));
+		*/
 	}
-	*/
 	
-	/* Set Cache
-	@Bean
-	public CacheHelper getCacheHelper(){
-		
-		CacheHelper cacheHelper = new CacheHelper();
-		cacheHelper.addProperties(new CacheSetProperties("cacheName1",10,10,10));
-		cacheHelper.addProperties(new CacheSetProperties("cacheName2",20,20,20));
-		
-		return cacheHelper;
-	}
-	*/
 }
