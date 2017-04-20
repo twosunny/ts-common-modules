@@ -3,65 +3,81 @@ package woosun.common.jta.configuration;
 
 import java.util.HashMap;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+
+import com.atomikos.jdbc.AtomikosDataSourceBean;
+
 
 @Configuration
 @DependsOn("transactionManager")
 @EnableJpaRepositories(
     basePackages = "woosun.common.jta.repository", 
-    entityManagerFactoryRef = "otherEntityManagerFactory",
+    entityManagerFactoryRef = "otherEntityManagerFactory", 
     transactionManagerRef = "transactionManager"
     )
-public class OtherDataSourceConfiguration {
+public class OtherDataSourceConfiguration implements DataSourceConfiguration {
 	
-	@Bean(name = "otherDataSourceProperties")
-	@ConfigurationProperties("other.datasource")
-	public DataSourceProperties gameDataSourceProperties() {
-	    return new DataSourceProperties();
+	@Bean("otherDataSourceProperties")
+	@Qualifier("otherDataSourceProperties")
+	@ConfigurationProperties(prefix = "other.datasource")
+	@PostConstruct
+	public DataSourceProperties getDataSourceProperties(){
+		return new DataSourceProperties();
 	}
-
 	
-	@Bean(name = "otherDataSource")
-	@ConfigurationProperties("other.datasource")
-	public org.apache.tomcat.jdbc.pool.DataSource gameDataSource() {
+
+	@Primary
+	@Bean("otherDataSource")
+	@Qualifier("otherDataSource")
+	public DataSource getDataSource(
+			@Qualifier("otherDataSourceProperties") DataSourceProperties dataSourceProperties) {
+				
+		AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
+		xaDataSource.setXaDataSource(AtomikosJtaPlatform.getXADataSource(dataSourceProperties));
+		xaDataSource.setUniqueResourceName(dataSourceProperties.getUniqueResourceName());
+		xaDataSource.setMaxPoolSize(dataSourceProperties.getMaxPoolSize());
+		xaDataSource.setBorrowConnectionTimeout(dataSourceProperties.getBorrowConnectionTimeout());
+		xaDataSource.setMaxIdleTime(dataSourceProperties.getMaxIdleTime());
+		xaDataSource.setMaxPoolSize(dataSourceProperties.getMaxPoolSize());
+		xaDataSource.setMinPoolSize(dataSourceProperties.getMinPoolSize());
+		xaDataSource.setTestQuery(dataSourceProperties.getTestQuery());
 		
-		return (org.apache.tomcat.jdbc.pool.DataSource)gameDataSourceProperties().
-			initializeDataSourceBuilder().
-			type(org.apache.tomcat.jdbc.pool.DataSource.class).
-			build();
+		return xaDataSource;
 	    	
 	}
 	
-    @Bean(name = "otherEntityManagerFactory")
+	@Primary
+    @Bean("otherEntityManagerFactory")
     @DependsOn("transactionManager")
-    public LocalContainerEntityManagerFactoryBean otherEntityManagerFactory(
-            EntityManagerFactoryBuilder builder,
-            @Qualifier("gameDataSource") DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean getEntityManagerFactory(
+    		EntityManagerFactoryBuilder builder,
+    		@Qualifier("otherDataSource") DataSource datasource) {
     	
     	HashMap<String, Object> properties = new HashMap<String, Object>();
 		properties.put("hibernate.transaction.jta.platform", AtomikosJtaPlatform.class.getName());
 		properties.put("javax.persistence.transactionType", "JTA");
-		
-		LocalContainerEntityManagerFactoryBean entityManager = 
+    	
+    	LocalContainerEntityManagerFactoryBean entityManager = 
     			builder
-                .dataSource(dataSource)
+                .dataSource(datasource)
                 .packages("woosun.common.jta.entity")
                 .persistenceUnit("other")
                 .properties(properties)
+                .jta(true)
                 .build();
-    	
+
     	return entityManager;
-    	
     }
 	
 }
