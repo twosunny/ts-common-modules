@@ -3,11 +3,10 @@ package woosun.common.jta.configuration;
 
 import java.util.HashMap;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +14,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-
-import com.atomikos.jdbc.AtomikosDataSourceBean;
 
 
 @Configuration
@@ -26,43 +23,17 @@ import com.atomikos.jdbc.AtomikosDataSourceBean;
     entityManagerFactoryRef = "accountEntityManagerFactory", 
     transactionManagerRef = "transactionManager"
     )
-public class AccountDataSourceConfiguration implements DataSourceConfiguration {
+public class AccountRepositoryConfiguration {
 	
-	@Bean("accountDataSourceProperties")
-	@Qualifier("accountDataSourceProperties")
-	@ConfigurationProperties(prefix = "account.datasource")
-	@PostConstruct
-	public DataSourceProperties getDataSourceProperties(){
-		return new DataSourceProperties();
-	}
-	
-
-	@Primary
-	@Bean("accountDataSource")
-	@Qualifier("accountDataSource")
-	public DataSource getDataSource(
-			@Qualifier("accountDataSourceProperties") DataSourceProperties dataSourceProperties) {
-				
-		AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
-		xaDataSource.setXaDataSource(AtomikosJtaPlatform.getXADataSource(dataSourceProperties));
-		xaDataSource.setUniqueResourceName(dataSourceProperties.getUniqueResourceName());
-		xaDataSource.setMaxPoolSize(dataSourceProperties.getMaxPoolSize());
-		xaDataSource.setBorrowConnectionTimeout(dataSourceProperties.getBorrowConnectionTimeout());
-		xaDataSource.setMaxIdleTime(dataSourceProperties.getMaxIdleTime());
-		xaDataSource.setMaxPoolSize(dataSourceProperties.getMaxPoolSize());
-		xaDataSource.setMinPoolSize(dataSourceProperties.getMinPoolSize());
-		xaDataSource.setTestQuery(dataSourceProperties.getTestQuery());
-		
-		return xaDataSource;
-	    	
-	}
+	@Autowired
+	@Qualifier("accountDataSource") 
+	private DataSource datasource;
 	
 	@Primary
     @Bean("accountEntityManagerFactory")
     @DependsOn("transactionManager")
     public LocalContainerEntityManagerFactoryBean getEntityManagerFactory(
-    		EntityManagerFactoryBuilder builder,
-    		@Qualifier("accountDataSource") DataSource datasource) {
+    		EntityManagerFactoryBuilder builder) {
     	
     	HashMap<String, Object> properties = new HashMap<String, Object>();
 		properties.put("hibernate.transaction.jta.platform", AtomikosJtaPlatform.class.getName());
@@ -79,5 +50,5 @@ public class AccountDataSourceConfiguration implements DataSourceConfiguration {
 
     	return entityManager;
     }
-	
+
 }

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties("common-auth.session")
-public class SessionAuthenticationProperties {
+public class RedisSessionAuthenticationProperties {
 
 	private String redisHost = "localhost";
 	private int redisPort = 6379;

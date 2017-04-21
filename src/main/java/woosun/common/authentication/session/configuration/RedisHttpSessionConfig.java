@@ -15,10 +15,10 @@ import org.springframework.util.StringUtils;
 import redis.embedded.RedisServer;
 
 @EnableRedisHttpSession
-public class HttpSessionConfig {
+public class RedisHttpSessionConfig {
 	
 	@Autowired
-	private SessionAuthenticationProperties authenticationProperties;
+	private RedisSessionAuthenticationProperties authenticationProperties;
 	
 	@PostConstruct
 	private void init(){
